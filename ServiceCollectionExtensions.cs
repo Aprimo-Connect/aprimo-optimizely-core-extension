@@ -1,4 +1,6 @@
-﻿using EPiServer.Core;
+﻿using Aprimo.Opti.Core.Initialization;
+using EPiServer.Cms.Shell.UI.Rest.Models.Transforms;
+using EPiServer.Core;
 using EPiServer.Core.Internal;
 using EPiServer.Shell.Modules;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +17,9 @@ namespace Aprimo.Opti.Core
                 {
                     var aprimoRoot = AprimoContentProvider.GetRoot();
                     config[ContentProviderParameter.EntryPoint] = aprimoRoot.ToString();
-                }))
-            .Configure<ProtectedModuleOptions>(protectedModuleOptions =>
+                }));
+
+            services.Configure<ProtectedModuleOptions>(protectedModuleOptions =>
             {
                 if (!protectedModuleOptions.Items.Any(modules => modules.Name.Equals(AprimoConstants.ModuleName, System.StringComparison.OrdinalIgnoreCase)))
                 {
@@ -27,6 +30,9 @@ namespace Aprimo.Opti.Core
                     });
                 }
             });
+
+            services
+                 .AddSingleton<IModelTransform, ThumbnailAprimoTransform>();
         }
     }
 }

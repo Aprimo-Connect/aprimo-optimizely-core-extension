@@ -15,8 +15,8 @@ namespace Aprimo.Opti.Initialization
             context.Locate.Advanced.GetInstance<AprimoContentAssetResolver>()
                 .Initialize(context.Locate.Advanced.GetInstance<ContentTypeModelRepository>());
 
-            var aprimoAssetPersistantService = context.Locate.Advanced.GetInstance<IAprimoAssetPersistantService>();
-            aprimoAssetPersistantService.CheckDBConsistancy(AprimoConstants.DBVersion);
+            context.Locate.Advanced.GetInstance<IAprimoAssetPersistantService>()
+                .CheckDBConsistancy(AprimoConstants.DBVersion);
         }
 
         public void Uninitialize(InitializationEngine context)
