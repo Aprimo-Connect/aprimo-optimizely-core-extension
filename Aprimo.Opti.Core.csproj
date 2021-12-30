@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="DBScripts\aprimodb-v1.0.0.sql" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="DBScripts\aprimodb-v1.0.0.sql" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Dapper" Version="2.0.123" />
+	  <PackageReference Include="EPiServer.CMS" Version="12.2.1" />
+	  <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.15.0" />
+	  <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+	</ItemGroup>
+</Project>
