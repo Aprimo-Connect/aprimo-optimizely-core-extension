@@ -2,10 +2,29 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0</FileVersion>
+		<Version>2.0.0</Version>
+		<Product>Aprimo.Opti Content Provider for Aprimo DAM</Product>
+		<Authors>Aprimo</Authors>
+		<Company>Aprimo</Company>
+		<Description>Aprimo content provider for Optimizely</Description>
+		<PackageProjectUrl>https://github.com/Aprimo-Connect/aprimo-optimizely-core-extension</PackageProjectUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageIconUrl />
+		<RepositoryUrl>https://github.com/Aprimo-Connect/aprimo-optimizely-core-extension</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>Aprimo, Optimizely, Content Provider</PackageTags>
+		<PackageReleaseNotes>Release for Aprimo.Opti.Core content provider for Aprimo DAM in Optimizely CMS / Commerce</PackageReleaseNotes>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <None Remove="DBScripts\aprimodb-v1.0.0.sql" />
+	  <None Include="..\Aprimo.Opti\images\icon.png">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
