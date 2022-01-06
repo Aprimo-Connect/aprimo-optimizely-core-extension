@@ -1,0 +1,7 @@
+﻿@model AlloyTemplates.Models.ViewModels.ImageViewModel
+@using Aprimo.Opti.Core
+
+@if (Model!=null && !string.IsNullOrWhiteSpace(Model.Url))
+{
+    <img src="@Model.Url" class="img-fluid"/>
+}

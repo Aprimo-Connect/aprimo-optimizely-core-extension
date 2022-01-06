@@ -1,0 +1,21 @@
+﻿@model EPiServer.Core.ContentReference
+@using Aprimo.Opti.Core
+@using EPiServer.ServiceLocation
+
+@if (Model != null)
+{
+
+    if (Model.ProviderName != null && Model.ProviderName.Equals(AprimoConstants.ProviderKey))
+    {
+        var originalUrl = Model.GetAprimoUrl();
+        if (!string.IsNullOrWhiteSpace(originalUrl))
+        {
+            var image = ServiceLocator.Current.GetInstance<EPiServer.IContentLoader>().Get<AlloyTemplates.Models.Media.AprimoImageAsset>(Model);
+            <img src="@originalUrl" class="img-fluid" alt="@image.AltText" />
+        }
+    }
+    else
+    {
+        <img src="@Url.ContentUrl(Model)" alt="" />
+    }
+}

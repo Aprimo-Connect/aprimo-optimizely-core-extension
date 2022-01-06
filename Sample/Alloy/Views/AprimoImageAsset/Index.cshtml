@@ -1,0 +1,6 @@
+﻿@model AlloyTemplates.Models.ViewModels.ImageViewModel
+
+@if (!string.IsNullOrWhiteSpace(Model.Url))
+{
+    <img src="@Model.Url" class="img-fluid" title="@Model.Name"/>
+}

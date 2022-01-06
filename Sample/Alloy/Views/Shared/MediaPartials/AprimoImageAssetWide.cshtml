@@ -1,0 +1,9 @@
+﻿@model EPiServer.Core.ContentReference
+@using Aprimo.Opti.Core
+@{     
+    string url = Model.GetAprimoUrl("Wide");
+}
+@if (!string.IsNullOrWhiteSpace(url))
+{
+    <img src="@url" class="img-fluid"/>
+}
