@@ -1,12 +1,153 @@
-# Aprimo Content Provider for Optimizely
-![Aprimo Connector](https://github.com/JoshuaFolkerts/Aprimo.Opti/blob/8422d7970033375103604f304075f648d0997118/images/Screenshot.png)
+# Aprimo Optimizely Connector
+Aprimo Optimizley(Opti) Connector is a content provider plugin that allows you to interact with Aprimo
+Image assets in your Optimizely website. This connector provides the communication to and from
+Aprimo without leaving your website.
+## Features
+- Search and navigation support for Aprimo assets in Optimizely
+- Integration with own section for Aprimo assets
+- Add any meta data information from Aprimo to strongly typed properties for your asset.
+- Offline support for meta data.
 ## Requirements
+1. Asp.Net 5.0+
+## Installation
+Install the nuget package from Optimizely Nuget Feed
+
+` INSTALL-PACKAGE APRIMO.OPTIMIZELY.EXTENSION ` 
+1. You will need to retrieve your ClientID, ClientSecret from your Aprimo portal which uses OAuth
+2.0 authorization. Before the connector will start to communicate with Aprimo, You will need ot
+register your client (website). You can read about registering your client here.
+(https://developers.aprimo.com/distributed-marketing/rest-api/authorization/)
+2. After you have those 2 items, you will need your integration name (normally found at
+https://(integration-name).aprimo.com that was configured for you by Aprimo.
+3. Once you have those two pieces of information, you will need to add those to your AppSettings
+section in you web.config.
 ```
-<PackageReference Include="Dapper" Version="2.0.123" />
-<PackageReference Include="EPiServer.CMS" Version="12.2.1" />
-<PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.15.0" />
-<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+<appSettings>
+  <add key="aprimo-api-tenantid" value="your_aprimo_username" />
+  <add key="aprimo-api-clientid" value="your_aprimo_client_id" />
+  <add key="aprimo-api-clientsecret" value="your_aprimo_clientsecret"
+  />
+  <add key="aprimo-api-dialogmode" value="default" />
+  <add key="aprimo-api-dialogbuttontext" value="Select" />
+  <add key="aprimo-api-dialogdescription" value="Select Asset" />
+  <add key="aprimo-api-dialogtitle" value="Select" />
+</appSettings>
 ```
+Connector Configuration
+To configuration Aprimo to return object models from the CMS to use in your views and api, we need to
+setup a model.
+** You can configure more than one for EACH extension for images, but you can use 1 model for all images if need be. **
+1. Create a new ContentType class.
+(https://world.optimizely.com/documentation/developer-guides/archive/-net-corepreview/
+CMS/Content/content-types/#CreatingContentType).
+  a. In this example, we will create a class called AprimoImageFile.
+2. Add the attribute:
+[AprimoAssetDescriptor(ExtensionString = "jpg,jpeg,png,tif,tiff,gif")]
+  a. This tells the system that any file with the following extension will map its Aprimo Asset
+to this Model class
+3. Derive your ContentType from AprimoImageData. This is REQUIRED. This add properties
+needed for the system such as thumbnails, and metadata properties
+4. You will be able to add your properties to allow the mapper to fill the properties in your model.
+To map properties to Aprimo properties, you will need to create public properties with the
+attribute [AprimoFieldName(“NameofPropertyInAprimo”)]
+  a. This will map the property on the Aprimo Asset to the AprimoImageFile property when
+filling its data.
+## Aprimo Field Mapping.
+Each Aprimo ContentType in Opti allows you to specify any number of properties on your model. The
+connector allows you to map those properties to Aprimo by specifying the AprimoField Attribute.
+[AprimoFieldName] attribute
+1. Can be used to map the Aprimo Metadata property to Opti property
+2. Can have as many as you need. Follow Opti ContentType requires for number of properties per
+model
+3. Does not do type conversion.
+
+### SAMPLE Content Type with Attribute
+```
+[ContentType(DisplayName = "Aprimo Image File", GUID = "5420194f-16ae-46d2-8f3a-0c682d232581", Description = "Respresents aprimo image asset", Order = 1)]
+[AprimoAssetDescriptor(ExtensionString = "jpg,jpeg,png,tif,tiff,gif")]
+public class AprimoImageAsset : AprimoImageData
+{
+  [AprimoFieldName("Alt")]
+  public virtual string AltText { get; set; }
+}
+```
+#### Aprimo Transform Attribute
+[AprimoTransform()]
+Aprimo Transform attribute allows you to generate custom image transformations for the asset. If you
+need to change the output type to webp, or crop an image, AprimoTransform attribute property can be
+used. You do not need to use the aprimotransform attribute, you can tack it on to the end of the url and
+will produce the same result. The attribute is just a nice helper attribute to configure the resulting
+transform for you.
+The attribute properties you can use for Aprimo Transform are as follows:
+- auto - Enable optimization features automatically.
+- bg-color - Set the background color of an image.
+- blur - Set the blurriness of the output image.
+- brightness - Set the brightness of the output image.
+- canvas - Increase the size of the canvas around an image.
+- contrast - Set the contrast of the output image.
+- crop - Remove pixels from an image.
+- disable - Disable functionality that is enabled by default.
+- dpr - Serve correctly sized images for devices that expose a device pixel ratio.
+- enable - Enable functionality that is disabled by default.
+- fit - Set how the image will fit within the size bounds provided.
+- format - Specify the output format to convert the image to.
+- frame - Extract the first frame from an animated image sequence.
+- height - Resize the height of the image.
+- level - Specify the level constraints when converting to video.
+- optimize - Automatically apply optimal quality compression.
+- orient Change the cardinal orientation of the image.
+- pad Add pixels to the edge of an image.
+- precrop Remove pixels from an image before any other transformations occur.
+- profile Specify the profile class of application when converting to video.
+- quality Optimize the image to the given compression level for lossy file formatted images.
+- resizefilter - specify the resize filter used when resizing images.
+- saturation Set the saturation of the output image.
+- sharpen Set the sharpness of the output image.
+- trim Remove pixels from the edge of an image.
+- width Resize the width of the image.
+
+The process order for these attributes are as follows.
+1. Precrop
+2. trim
+3. crop
+4. orient
+5. width height DPR fit resize-filter disable enable
+6. pad canvas bg-color
+7. brightness contrast saturation
+8. sharpen
+9. blur
+10. format auto optimize quality profile level
+### SAMPLE Transform Attribute
+```
+[ContentType(DisplayName = "Aprimo Image File", GUID = "5420194f-16ae-46d2-8f3a-0c682d232581", Description = "Respresents aprimo image asset", Order = 1)]
+[AprimoAssetDescriptor(ExtensionString = "jpg,jpeg,png,tif,tiff,gif")]
+public class AprimoImageAsset : AprimoImageData
+{
+  [AprimoTransform(Auto = "webp", Width = "400", Crop = "16:9")]
+  public virtual string Teaser { get; set; }
+  [AprimoFieldName("Alt")]
+  public virtual string AltText { get; set; }
+  [AprimoTransform(Auto = "webp", Width = "800", Crop = "16:9")]
+  public virtual string JumboTronImage { get; set; }
+}
+```
+### Additional Extension Methods
+The connector provides a couple extensions to use for retrieving the Aprimo ImageUrl based on
+contentreference, Url, and propertynames. The 3 following extensions are available.
+```
+public static string GetAprimoUrl(this ContentReference contentReference) // will return
+normal image if you are using both optimizely and aprimo image types
+public static string GetAprimoUrl(this Url url)
+public static string GetAprimoUrl(this ContentReference contentReference, string
+propertyName) // for thumbnails or different values
+```
+With these extension methods, they are not necessary, they are for your help in getting
+the right url in your code or views.
+
+
+----------------------------------------------------------------------------
+# Install Through Source Code
+
 
 ## Getting Started
 Before we can see the data in our Optimizely interface, we need to update the AppSettings values for handling the connection between the aprimo/optimizely connector and Aprimo REST API / Content Selector.
