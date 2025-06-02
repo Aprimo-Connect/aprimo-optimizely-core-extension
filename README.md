@@ -22,7 +22,7 @@ Please note: This code may include references to non-Aprimo services or APIs. Yo
 ## Requirements
 1. Asp.Net 5.0+
 2. Optimizely v11
-   - This connector was built and tested on Optimizely v11. We expect that changes will need to be made to the connector to support Optimizely v12.
+   - This connector was built and tested on Optimizely v11. We expect that development work will be needed for the connector to support Optimizely v12.
 
 ## Installation
 Install the nuget package from Optimizely Nuget Feed
